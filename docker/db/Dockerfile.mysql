@@ -1,4 +1,4 @@
-FROM mysql:8
+FROM mysql:8.0.32
 
 ENV MYSQL_ROOT_PASSWORD=1f18ac3cd637
 ENV MYSQL_DATABASE=gym_schedule_exame
@@ -9,5 +9,3 @@ ENV MYSQL_PASSWORD=1f18ac3cd637
 COPY init.sql /docker-entrypoint-initdb.d/
 
 EXPOSE 3306
-
-CMD ["mysqld"]
