@@ -1,0 +1,48 @@
+services:
+  api:
+    container_name: m2.gym.api.exame
+    image: a045580/api-m2-gym:v4
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db           
+      - DB_PORT=3306
+      - DB_USER=admin
+      - DB_PASSWORD=1f18ac3cd637
+      - DB_NAME=gym_schedule_exame  
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: always          
+
+  db:
+    image: a045580/db-m2-gym:v1
+    container_name: m2.gym.db.exame
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=1f18ac3cd637
+      - MYSQL_DATABASE=gym_schedule_exame
+    volumes:
+      - db-datasource:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1f18ac3cd637"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 60s     
+    restart: always
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-datasource:

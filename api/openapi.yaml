@@ -1,0 +1,710 @@
+openapi: 3.0.0
+info:
+  title: API de Agendamento de Aulas de Ginásio
+  description: API para gerenciar agendamentos de aulas de ginásio.
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: Servidor local
+paths:
+  /users:
+    get:
+      tags:
+      - UsersController
+      summary: Get all users
+      description: Retrieve a list of all users in the system.
+      operationId: usersGET
+      responses:
+        "200":
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+                x-content-type: application/json
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_500"
+      x-swagger-router-controller: UsersController
+    post:
+      tags:
+      - UsersController
+      summary: Create a new User
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: User created successfully
+      x-swagger-router-controller: UsersController
+  /users/{id}:
+    get:
+      tags:
+      - UsersController
+      summary: Get a user by ID
+      description: Retrieve a user by their unique ID.
+      operationId: usersIdGET
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the user to retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: A user object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_404"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_500"
+      x-swagger-router-controller: UsersController
+    put:
+      tags:
+      - UsersController
+      summary: Update an existing user
+      operationId: usersIdPUT
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+      x-swagger-router-controller: UsersController
+    delete:
+      tags:
+      - UsersController
+      summary: Delete a user by ID
+      operationId: usersIdDELETE
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+      x-swagger-router-controller: UsersController
+  /users/{id}/schedules:
+    get:
+      tags:
+      - UsersController
+      summary: Get schedules for a user
+      operationId: getUserSchedules
+      parameters:
+      - name: id
+        in: path
+        description: ID do utilizador
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Lista de agendamentos do utilizador
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+        "404":
+          description: Utilizador não encontrado
+      x-swagger-router-controller: UsersController
+  /users/{id}/feedbacks:
+    get:
+      tags:
+      - UsersController
+      summary: Get all feedbacks from a user
+      operationId: getUserFeedbacks
+      parameters:
+      - name: id
+        in: path
+        description: ID do utilizador
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Lista de feedbacks do utilizador
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Feedback"
+        "404":
+          description: Utilizador não encontrado
+      x-swagger-router-controller: UsersController
+  /feedback:
+    post:
+      tags:
+      - FeedbacksController
+      summary: Create feedback for a schedule
+      operationId: createFeedback
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Feedback"
+      responses:
+        "201":
+          description: Feedback created successfully
+      x-swagger-router-controller: FeedbacksController
+  /feedback/{schedule_id}:
+    get:
+      tags:
+      - FeedbacksController
+      summary: Get feedbacks for a schedule
+      operationId: getFeedbacks
+      parameters:
+      - name: schedule_id
+        in: path
+        description: ID of a schedule
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of feedbacks for the schedule
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Feedback"
+                x-content-type: application/json
+      x-swagger-router-controller: FeedbacksController
+  /feedbacks/{id}:
+    put:
+      tags:
+      - FeedbacksController
+      summary: Update a feedback by ID
+      operationId: feedbacksIdPUT
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Feedback"
+      responses:
+        "200":
+          description: Feedback updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Feedback"
+      x-swagger-router-controller: FeedbacksController
+    delete:
+      tags:
+      - FeedbacksController
+      summary: Delete a feedback by ID
+      operationId: feedbacksIdDELETE
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Feedback deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200_1"
+      x-swagger-router-controller: FeedbacksController
+  /schedules:
+    get:
+      tags:
+      - SchedulesController
+      summary: Retrieve schedules
+      operationId: retrieveSchedules
+      responses:
+        "200":
+          description: Array of Schedule model instances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+                x-content-type: application/json
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+      x-swagger-router-controller: SchedulesController
+    post:
+      tags:
+      - SchedulesController
+      summary: Create Schedule
+      operationId: createSchedule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Schedule"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Schedule"
+      responses:
+        "200":
+          description: Create a Schedule model instance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+      x-swagger-router-controller: SchedulesController
+  /schedules/{id}:
+    get:
+      tags:
+      - SchedulesController
+      summary: Retrieve a specific schedule
+      operationId: retrieveSchedule
+      parameters:
+      - name: id
+        in: path
+        description: ID do agendamento
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+        examples:
+          one:
+            summary: Retrieved Schedule id 1
+            value: 1
+          two:
+            summary: Retrieved Schedule id 2
+            value: 2
+      responses:
+        "200":
+          description: Agendamento encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+        "404":
+          description: Agendamento não encontrado
+      x-swagger-router-controller: SchedulesController
+    put:
+      tags:
+      - SchedulesController
+      summary: Update Schedule
+      operationId: updateSchedule
+      parameters:
+      - name: id
+        in: path
+        description: ID do agendamento
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+        examples:
+          one:
+            summary: Retrieved Schedule id 1
+            value: 1
+          two:
+            summary: Retrieved Schedule id 2
+            value: 2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Schedule"
+            examples:
+              GinasioExample01:
+                $ref: "#/components/examples/ScheduleExample01"
+      responses:
+        "200":
+          description: Atualização bem-sucedida
+          content:
+            application/json:
+              schema:
+                description: Schedule PUT success
+                x-content-type: application/json
+            application/xml:
+              schema:
+                description: Schedule PUT success
+        "400":
+          description: Bad request
+        "404":
+          description: Agendamento não encontrado
+      x-swagger-router-controller: SchedulesController
+    delete:
+      tags:
+      - SchedulesController
+      summary: Delete Schedule
+      operationId: deleteSchedule
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+        examples:
+          one:
+            summary: Delete Schedule id 1
+            value: 1
+          two:
+            summary: Delete Schedule id 2
+            value: 2
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: id not found
+      x-swagger-router-controller: SchedulesController
+  /instructors:
+    get:
+      tags:
+      - InstructorsController
+      summary: Retrieve a list of instructors
+      operationId: getInstructors
+      responses:
+        "200":
+          description: A list of instructors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Instructor"
+                x-content-type: application/json
+      x-swagger-router-controller: InstructorsController
+    post:
+      tags:
+      - InstructorsController
+      summary: Create a new Instructor
+      operationId: createInstructor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Instructor"
+      responses:
+        "201":
+          description: Instructor created successfully
+      x-swagger-router-controller: InstructorsController
+  /instructors/{id}:
+    get:
+      tags:
+      - InstructorsController
+      summary: Get an instructor by ID
+      operationId: getInstructor
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the instructor to retrieve
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Instructor found successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Instructor"
+        "404":
+          description: Instructor not found
+      x-swagger-router-controller: InstructorsController
+    put:
+      tags:
+      - InstructorsController
+      summary: Update an instructor by ID
+      operationId: updateInstructor
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the instructor to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Instructor"
+      responses:
+        "200":
+          description: Instructor updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Instructor"
+        "404":
+          description: Instructor not found
+      x-swagger-router-controller: InstructorsController
+    delete:
+      tags:
+      - InstructorsController
+      summary: Delete an instructor by ID
+      operationId: deleteInstructor
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the instructor to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Instructor deleted successfully
+        "404":
+          description: Instructor not found
+      x-swagger-router-controller: InstructorsController
+  /instructors/{id}/schedules:
+    get:
+      tags:
+      - InstructorsController
+      summary: Get schedules for an instructor
+      operationId: getInstructorSchedules
+      parameters:
+      - name: id
+        in: path
+        description: ID do instrutor
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Lista de agendamentos do instrutor
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+        "404":
+          description: Instrutor não encontrado
+        "500":
+          description: Erro interno do servidor
+      x-swagger-router-controller: InstructorsController
+components:
+  schemas:
+    Instructor:
+      required:
+      - name
+      - specialty
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        specialty:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+      description: Optional phone number of the instructor
+      example:
+        specialty: specialty
+        phone: phone
+        name: name
+        id: 0
+        email: email
+    User:
+      required:
+      - email
+      - name
+      - password
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum:
+          - admin
+          - member
+      example:
+        password: password
+        role: admin
+        name: name
+        id: 0
+        email: email
+    Feedback:
+      required:
+      - rating
+      - schedule_id
+      - user_id
+      type: object
+      properties:
+        id:
+          type: integer
+        schedule_id:
+          type: integer
+        user_id:
+          type: integer
+        rating:
+          type: integer
+          description: Rating (from 1 to 5)
+        comment:
+          type: string
+          description: Optional comment
+        created_at:
+          type: string
+          description: Timestamp of when the feedback was created
+          format: date-time
+      example:
+        user_id: 1
+        rating: 5
+        created_at: 2000-01-23T04:56:07.000+00:00
+        comment: comment
+        id: 0
+        schedule_id: 6
+    Schedule:
+      title: Schedule
+      required:
+      - class_name
+      - date
+      - date_time
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        class_name:
+          type: string
+        date:
+          type: string
+          example: 2024-11-21
+        date_time:
+          type: string
+          example: 2024-11-21T14:00:00Z
+        reserved_by:
+          type: integer
+          format: int64
+        instructor_id:     
+          type: integer
+          format: int64
+          description: ID do instrutor responsável pela aula
+      additionalProperties: false
+      example:
+        date: 2024-11-21
+        date_time: 2024-11-21T14:00:00Z
+        reserved_by: 6
+        id: 0
+        class_name: class_name
+    inline_response_500:
+      type: object
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+    inline_response_404:
+      type: object
+      properties:
+        message:
+          type: string
+    inline_response_200:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User with ID 1 deleted successfully
+      example:
+        message: User with ID 1 deleted successfully
+    inline_response_200_1:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Feedback with ID 1 deleted successfully
+      example:
+        message: Feedback with ID 1 deleted successfully
+  examples:
+    ScheduleExample01:
+      value:
+        id: 1
+        class_name: Aula Ginástica
+        date: 2024-11-21
+        date_time: 2024-11-21T14:00:00Z
+        reserved_by: 1
